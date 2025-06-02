@@ -56,7 +56,6 @@ export const App = () => {
   }, [images.length, totalHits]);
 
   const formSubmitHandler = ( inputSearch ) => {
-    console.log(inputSearch);
     setInputSearch(inputSearch);
     setPages(1);
     setImages([]);
