@@ -55,7 +55,8 @@ export const App = () => {
     }
   }, [images.length, totalHits]);
 
-  const formSubmitHandler = ({ inputSearch }) => {
+  const formSubmitHandler = ( inputSearch ) => {
+    console.log(inputSearch);
     setInputSearch(inputSearch);
     setPages(1);
     setImages([]);
@@ -73,7 +74,7 @@ export const App = () => {
   const onLoadMoreButton = () => {
     setPages(prev => prev + 1);
   };
-  console.log(images.length, totalHits);
+  
   return (
     <Container>
       <SearchBar onSubmit={formSubmitHandler} />
