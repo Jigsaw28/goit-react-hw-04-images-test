@@ -17,7 +17,7 @@ export const App = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState();
   const [totalHits, setTotalHits] = useState(0);
-  const [newHits, setNewHits] = useState(1);
+  const [fullHits, setFullHits] = useState([]);
 
   useEffect(() => {
     if (inputSearch) {
@@ -26,7 +26,6 @@ export const App = () => {
         .then(({ hits, totalHits }) => {
           setTotalHits(totalHits);
           if (hits.length === 0) {
-            setNewHits(0);
             return toast.error(
               `Don't found name ${inputSearch} , enter something else please!`
             );
@@ -37,11 +36,12 @@ export const App = () => {
             );
             return [...prev, ...uniqueHits];
           });
+          setFullHits(prev => [...prev, ...hits]);
         })
         .catch(error => console.log(error))
         .finally(() => setLoading(false));
     }
-  }, [images.length, inputSearch, pages]);
+  }, [inputSearch, pages]);
 
   useEffect(() => {
     if (pages > 1) {
@@ -50,15 +50,16 @@ export const App = () => {
   }, [images, pages]);
 
   useEffect(() => {
-    if (images.length >= totalHits && totalHits > 0) {
+    if (fullHits.length >= totalHits && totalHits > 0) {
       toast.error('You have reached the end of the collection.');
     }
-  }, [images.length, totalHits]);
+  }, [fullHits.length, totalHits]);
 
   const formSubmitHandler = ( inputSearch ) => {
     setInputSearch(inputSearch);
     setPages(1);
     setImages([]);
+    setTotalHits(0);
   };
 
   const toggleModal = modalImageUrl => {
@@ -80,9 +81,8 @@ export const App = () => {
       <ImageGallery images={images} showModal={toggleModal} />
       {loading && <Loader />}
       {!loading &&
-        images.length < totalHits &&
-        images.length > 0 &&
-        newHits > 0 && <Button onLoadMore={onLoadMoreButton} />}
+        fullHits.length < totalHits &&
+        fullHits.length > 0 && <Button onLoadMore={onLoadMoreButton} />}
       {showModal && <Modal openModal={modalImageUrl} closeModal={closeModal} />}
       <ToastContainer autoClose={3000} />
     </Container>
